@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบ RCA - โรงพยาบาลธัญญารักษ์ปัตตานี</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .stat-card .number {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #28a745; color: white; }
+        .badge-warning { background: #ffc107; color: #333; }
+        .badge-danger { background: #dc3545; color: white; }
+        .badge-info { background: #17a2b8; color: white; }
+
+        .fishbone-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .factor-group {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .factor-group h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏥 ระบบบริหารจัดการ RCA</h1>
+            <p>โรงพยาบาลธัญญารักษ์ปัตตานี</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showTab('incident')">📝 บันทึกเหตุการณ์</button>
+            <button class="nav-tab" onclick="showTab('rca')">🔍 ดำเนินการ RCA</button>
+            <button class="nav-tab" onclick="showTab('action')">📋 แผนปรับปรุง</button>
+            <button class="nav-tab" onclick="showTab('followup')">📈 ติดตามผล</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <h2 class="section-title">สรุปภาพรวม</h2>
+            
+            <div id="dashboardLoading" class="loading">
+                <div class="spinner"></div>
+                กำลังโหลดข้อมูล...
+            </div>
+
+            <div id="dashboardContent" style="display: none;">
+                <div class="dashboard-grid" id="statsGrid">
+                    <!-- Stats will be loaded here -->
+                </div>
+
+                <h3 style="margin-top: 40px; margin-bottom: 20px;">📌 เหตุการณ์เสี่ยงล่าสุด</h3>
+                <div class="table-container">
+                    <table id="recentIncidentsTable">
+                        <thead>
+                            <tr>
+                                <th>วันที่</th>
+                                <th>หน่วยงาน</th>
+                                <th>ประเภท</th>
+                                <th>ระดับความรุนแรง</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentIncidentsBody">
+                            <!-- Data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incident Report Tab -->
+        <div id="incident" class="tab-content">
+            <h2 class="section-title">บันทึกเหตุการณ์เสี่ยง</h2>
+            
+            <div class="alert alert-success" id="incidentSuccess"></div>
+            <div class="alert alert-error" id="incidentError"></div>
+
+            <form id="incidentForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>วันที่เกิดเหตุการณ์ <span class="required">*</span></label>
+                        <input type="date" name="incident_date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>เวลาที่เกิดเหตุการณ์ <span class="required">*</span></label>
+                        <input type="time" name="incident_time" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>หน่วยงาน/แผนก <span class="required">*</span></label>
+                        <select name="department" required>
+                            <option value="">-- เลือกหน่วยงาน --</option>
+                            <option value="หอผู้ป่วยใน">หอผู้ป่วยใน</option>
+                            <option value="ห้องตรวจ">ห้องตรวจ</option>
+                            <option value="แผนกเภสัช">แผนกเภสัช</option>
+                            <option value="แผนกรังสี">แผนกรังสี</option>
+                            <option value="ห้องปฏิบัติการ">ห้องปฏิบัติการ</option>
+                            <option value="แผนกการพยาบาล">แผนกการพยาบาล</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ผู้รายงาน <span class="required">*</span></label>
+                        <input type="text" name="reporter" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ประเภทเหตุการณ์ <span class="required">*</span></label>
+                        <select name="incident_type" required>
+                            <option value="">-- เลือกประเภท --</option>
+                            <option value="เกี่ยวกับผู้ป่วย">เกี่ยวกับผู้ป่วย</option>
+                            <option value="เกี่ยวกับยา">เกี่ยวกับยา</option>
+                            <option value="เกี่ยวกับเครื่องมือ">เกี่ยวกับเครื่องมือ</option>
+                            <option value="เกี่ยวกับบุคลากร">เกี่ยวกับบุคลากร</option>
+                            <option value="การติดเชื้อ">การติดเชื้อ</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ระดับความรุนแรง <span class="required">*</span></label>
+                        <select name="severity_level" required>
+                            <option value="">-- เลือกระดับ --</option>
+                            <option value="1">1 - เล็กน้อย</option>
+                            <option value="2">2 - น้อย</option>
+                            <option value="3">3 - ปานกลาง</option>
+                            <option value="4">4 - รุนแรง</option>
+                            <option value="5">5 - ร้ายแรงมาก</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>HN ผู้ป่วย (ถ้ามี)</label>
+                    <input type="text" name="patient_hn">
+                </div>
+
+                <div class="form-group">
+                    <label>รายละเอียดเหตุการณ์ <span class="required">*</span></label>
+                    <textarea name="description" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>มาตรการเบื้องต้น</label>
+                    <textarea name="immediate_action"></textarea>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary" id="submitIncidentBtn">
+                        💾 บันทึกเหตุการณ์
+                    </button>
+                    <button type="reset" class="btn btn-secondary">🔄 ล้างข้อมูล</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- RCA Tab -->
+        <div id="rca" class="tab-content">
+            <h2 class="section-title">ดำเนินการ Root Cause Analysis</h2>
+
+            <div class="alert alert-success" id="rcaSuccess"></div>
+            <div class="alert alert-error" id="rcaError"></div>
+
+            <div class="form-group">
+                <label>เลือกเหตุการณ์ <span class="required">*</span></label>
+                <select id="selectIncident" onchange="loadIncidentDetails(this.value)">
+                    <option value="">-- เลือกเหตุการณ์ --</option>
+                </select>
+            </div>
+
+            <form id="rcaForm">
+                <input type="hidden" name="incident_id" id="rcaIncidentId">
+                
+                <h3 style="margin: 30px 0 20px; color: #667eea;">👥 ข้อมูลทีม RCA</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>หัวหน้าทีม <span class="required">*</span></label>
+                        <input type="text" name="team_leader" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>วันที่ประชุม <span class="required">*</span></label>
+                        <input type="date" name="meeting_date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>สมาชิกทีม</label>
+                    <input type="text" name="team_members" placeholder="คั่นด้วย ,">
+                </div>
+
+                <h3 style="margin: 30px 0 20px; color: #667eea;">🔍 เครื่องมือวิเคราะห์</h3>
+                
+                <div class="form-group">
+                    <label>เลือกเครื่องมือ <span class="required">*</span></label>
+                    <select name="rca_method" onchange="showAnalysisTool(this.value)" required>
+                        <option value="">-- เลือก --</option>
+                        <option value="fishbone">Fishbone (6M)</option>
+                        <option value="5why">5 Whys</option>
+                    </select>
+                </div>
+
+                <!-- Fishbone -->
+                <div id="fishbone-tool" class="fishbone-container" style="display: none;">
+                    <h4 style="text-align: center; margin-bottom: 30px; color: #667eea;">🐟 Fishbone Diagram (6M)</h4>
+                    
+                    <div class="factor-group">
+                        <h4>👤 Man (คน)</h4>
+                        <textarea name="factor_man"></textarea>
+                    </div>
+
+                    <div class="factor-group">
+                        <h4>⚙️ Machine (เครื่องมือ)</h4>
+                        <textarea name="factor_machine"></textarea>
+                    </div>
+
+                    <div class="factor-group">
+                        <h4>📋 Method (วิธีการ)</h4>
+                        <textarea name="factor_method"></textarea>
+                    </div>
+
+                    <div class="factor-group">
+                        <h4>📦 Material (วัสดุ)</h4>
+                        <textarea name="factor_material"></textarea>
+                    </div>
+
+                    <div class="factor-group">
+                        <h4>🌍 Environment (สภาพแวดล้อม)</h4>
+                        <textarea name="factor_environment"></textarea>
+                    </div>
+
+                    <div class="factor-group">
+                        <h4>📊 Management (การจัดการ)</h4>
+                        <textarea name="factor_management"></textarea>
+                    </div>
+                </div>
+
+                <!-- 5 Whys -->
+                <div id="5why-tool" style="display: none; background: #f8f9fa; padding: 30px; border-radius: 15px; margin: 20px 0;">
+                    <h4 style="text-align: center; margin-bottom: 30px; color: #667eea;">❓ 5 Whys Analysis</h4>
+                    
+                    <div class="form-group">
+                        <label>ปัญหาที่เกิดขึ้น</label>
+                        <textarea name="why_problem"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Why 1</label>
+                        <textarea name="why_1"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Why 2</label>
+                        <textarea name="why_2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Why 3</label>
+                        <textarea name="why_3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Why 4</label>
+                        <textarea name="why_4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Why 5 (Root Cause)</label>
+                        <textarea name="why_5"></textarea>
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 20px; color: #667eea;">🎯 สรุปสาเหตุราก</h3>
+                
+                <div class="form-group">
+                    <label>สาเหตุหลัก <span class="required">*</span></label>
+                    <textarea name="root_cause_primary" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>สาเหตุรอง</label>
+                    <textarea name="root_cause_contributing"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>ข้อเสนอแนะ</label>
+                    <textarea name="recommendations"></textarea>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary" id="submitRCABtn">
+                        💾 บันทึก RCA
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Action Plan Tab -->
+        <div id="action" class="tab-content">
+            <h2 class="section-title">แผนปรับปรุง</h2>
+
+            <div class="alert alert-success" id="actionSuccess"></div>
+            <div class="alert alert-error" id="actionError"></div>
+
+            <div class="form-group">
+                <label>เลือก RCA <span class="required">*</span></label>
+                <select id="selectRCA">
+                    <option value="">-- เลือก RCA --</option>
+                </select>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <button type="button" class="btn btn-primary" onclick="addActionItem()">➕ เพิ่มแผน</button>
+                <button type="button" class="btn btn-primary" onclick="saveAllActions()">💾 บันทึกทั้งหมด</button>
+            </div>
+
+            <div id="actionPlanList"></div>
+
+            <div id="actionTemplate" style="display: none;">
+                <div class="factor-group action-item" style="margin-bottom: 25px; position: relative;">
+                    <button type="button" onclick="removeActionItem(this)" style="position: absolute; top: 15px; right: 15px; background: #dc3545; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">✕</button>
+                    
+                    <h4 style="margin-bottom: 20px;">แผนที่ <span class="action-number">1</span></h4>
+                    
+                    <div class="form-group">
+                        <label>กิจกรรม <span class="required">*</span></label>
+                        <textarea name="action_detail" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ผู้รับผิดชอบ <span class="required">*</span></label>
+                            <input type="text" name="responsible_person" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>กำหนดเสร็จ <span class="required">*</span></label>
+                            <input type="date" name="target_date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ทรัพยากร</label>
+                            <input type="text" name="resources">
+                        </div>
+
+                        <div class="form-group">
+                            <label>ลำดับความสำคัญ <span class="required">*</span></label>
+                            <select name="priority" required>
+                                <option value="">-- เลือก --</option>
+                                <option value="high">🔴 สูง</option>
+                                <option value="medium">🟡 ปานกลาง</option>
+                                <option value="low">🟢 ต่ำ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ตัวชี้วัด</label>
+                        <textarea name="expected_outcome"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Follow-up Tab -->
+        <div id="followup" class="tab-content">
+            <h2 class="section-title">ติดตามผล</h2>
+
+            <div class="alert alert-success" id="followupSuccess"></div>
+            <div class="alert alert-error" id="followupError"></div>
+
+            <div class="form-group">
+                <label>เลือกแผน <span class="required">*</span></label>
+                <select id="selectAction" onchange="loadActionDetails(this.value)">
+                    <option value="">-- เลือกแผน --</option>
+                </select>
+            </div>
+
+            <form id="followupForm">
+                <input type="hidden" name="action_id" id="followupActionId">
+
+                <div class="form-group">
+                    <label>วันที่ติดตาม <span class="required">*</span></label>
+                    <input type="date" name="follow_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label>ความคืบหน้า (%) <span class="required">*</span></label>
+                    <input type="number" name="progress_percent" min="0" max="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>รายละเอียด <span class="required">*</span></label>
+                    <textarea name="progress_detail" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>อุปสรรค</label>
+                    <textarea name="obstacles"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>ขั้นตอนถัดไป</label>
+                    <textarea name="next_step"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>ผู้บันทึก <span class="required">*</span></label>
+                    <input type="text" name="recorded_by" required>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary" id="submitFollowupBtn">
+                        💾 บันทึก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const API_URL = 'YOUR_WEB_APP_URL_HERE'; // แทนที่ด้วย Web App URL
+
+        // ============================================
+        // TAB NAVIGATION
+        // ============================================
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'dashboard') loadDashboard();
+            if (tabName === 'rca') loadIncidentsForRCA();
+            if (tabName === 'action') loadRCAsForAction();
+            if (tabName === 'followup') loadActionsForFollowup();
+        }
+
+        // ============================================
+        // API FUNCTIONS
+        // ============================================
+        async function callAPI(action, data = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action, ...data })
+                });
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return { success: false, message: 'เกิดข้อผิดพลาดในการเชื่อมต่อ' };
+            }
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
+        async function loadDashboard() {
+            document.getElementById('dashboardLoading').style.display = 'block';
+            document.getElementById('dashboardContent').style.display = 'none';
+
+            const result = await callAPI('getDashboard');
+
+            if (result.success) {
+                const data = result.data;
+                
+                // Update stats
+                document.getElementById('statsGrid').innerHTML = `
+                    <div class="stat-card">
+                        <h3>เหตุการณ์เสี่ยง</h3>
+                        <div class="number">${data.totalIncidents}</div>
+                        <p>เดือนนี้ +${data.incidentsThisMonth}</p>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h3>RCA อยู่ระหว่างดำเนินการ</h3>
+                        <div class="number">${data.rcaInProgress}</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <h3>แผนปรับปรุง</h3>
+                        <div class="number">${data.actionPlans}</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <h3>RCA เสร็จสิ้น</h3>
+                        <div class="number">${data.rcaCompleted}</div>
+                    </div>
+                `;
+
+                // Update recent incidents table
+                let tableHTML = '';
+                data.recentIncidents.forEach(inc => {
+                    tableHTML += `<tr>
+                        <td>${inc[1]}</td>
+                        <td>${inc[3]}</td>
+                        <td>${inc[5]}</td>
+                        <td><span class="badge badge-warning">${inc[6]}</span></td>
+                        <td><span class="badge badge-info">${inc[10]}</span></td>
+                    </tr>`;
+                });
+                document.getElementById('recentIncidentsBody').innerHTML = tableHTML;
+
+                document.getElementById('dashboardLoading').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+            }
+        }
+
+        // ============================================
+        // INCIDENT FORM
+        // ============================================
+        document.getElementById('incidentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitIncidentBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ กำลังบันทึก...';
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            const result = await callAPI('createIncident', data);
+
+            if (result.success) {
+                showAlert('incidentSuccess', result.message);
+                this.reset();
+            } else {
+                showAlert('incidentError', result.message);
+            }
+
+            btn.disabled = false;
+            btn.textContent = '💾 บันทึกเหตุการณ์';
+        });
+
+        // ============================================
+        // RCA FORM
+        // ============================================
+        async function loadIncidentsForRCA() {
+            const result = await callAPI('getIncidents', { filters: { status: 'รอดำเนินการ' } });
+            
+            if (result.success) {
+                const select = document.getElementById('selectIncident');
+                select.innerHTML = '<option value="">-- เลือกเหตุการณ์ --</option>';
+                
+                result.data.forEach(inc => {
+                    select.innerHTML += `<option value="${inc.incident_id}">${inc.incident_date} - ${inc.department} - ${inc.incident_type}</option>`;
+                });
+            }
+        }
+
+        function loadIncidentDetails(incidentId) {
+            document.getElementById('rcaIncidentId').value = incidentId;
+        }
+
+        function showAnalysisTool(method) {
+            document.getElementById('fishbone-tool').style.display = method === 'fishbone' ? 'block' : 'none';
+            document.getElementById('5why-tool').style.display = method === '5why' ? 'block' : 'none';
+        }
+
+        document.getElementById('rcaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitRCABtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ กำลังบันทึก...';
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            const result = await callAPI('createRCA', data);
+
+            if (result.success) {
+                showAlert('rcaSuccess', result.message);
+                this.reset();
+                loadIncidentsForRCA();
+            } else {
+                showAlert('rcaError', result.message);
+            }
+
+            btn.disabled = false;
+            btn.textContent = '💾 บันทึก RCA';
+        });
+
+        // ============================================
+        // ACTION PLAN
+        // ============================================
+        let actionItemCount = 0;
+
+        async function loadRCAsForAction() {
+            const result = await callAPI('getRCA');
+            
+            if (result.success) {
+                const select = document.getElementById('selectRCA');
+                select.innerHTML = '<option value="">-- เลือก RCA --</option>';
+                
+                result.data.forEach(rca => {
+                    select.innerHTML += `<option value="${rca.rca_id}">${rca.rca_id} - ${rca.team_leader}</option>`;
+                });
+            }
+        }
+
+        function addActionItem() {
+            actionItemCount++;
+            const template = document.getElementById('actionTemplate').innerHTML;
+            const div = document.createElement('div');
+            div.innerHTML = template;
+            div.querySelector('.action-number').textContent = actionItemCount;
+            document.getElementById('actionPlanList').appendChild(div.firstElementChild);
+        }
+
+        function removeActionItem(btn) {
+            btn.closest('.action-item').remove();
+            updateActionNumbers();
+        }
+
+        function updateActionNumbers() {
+            document.querySelectorAll('.action-number').forEach((el, idx) => {
+                el.textContent = idx + 1;
+            });
+            actionItemCount = document.querySelectorAll('.action-item').length;
+        }
+
+        async function saveAllActions() {
+            const rcaId = document.getElementById('selectRCA').value;
+            if (!rcaId) {
+                alert('กรุณาเลือก RCA');
+                return;
+            }
+
+            const actions = [];
+            document.querySelectorAll('.action-item').forEach(item => {
+                const action = {
+                    action_detail: item.querySelector('[name="action_detail"]').value,
+                    responsible_person: item.querySelector('[name="responsible_person"]').value,
+                    target_date: item.querySelector('[name="target_date"]').value,
+                    resources: item.querySelector('[name="resources"]').value,
+                    expected_outcome: item.querySelector('[name="expected_outcome"]').value,
+                    priority: item.querySelector('[name="priority"]').value
+                };
+                actions.push(action);
+            });
+
+            const result = await callAPI('createActionPlan', { rca_id: rcaId, actions });
+
+            if (result.success) {
+                showAlert('actionSuccess', result.message);
+                document.getElementById('actionPlanList').innerHTML = '';
+                actionItemCount = 0;
+            } else {
+                showAlert('actionError', result.message);
+            }
+        }
+
+        // ============================================
+        // FOLLOW-UP
+        // ============================================
+        async function loadActionsForFollowup() {
+            const result = await callAPI('getActionPlans');
+            
+            if (result.success) {
+                const select = document.getElementById('selectAction');
+                select.innerHTML = '<option value="">-- เลือกแผน --</option>';
+                
+                result.data.forEach(action => {
+                    select.innerHTML += `<option value="${action.action_id}">${action.action_detail.substring(0, 50)}... - ${action.responsible_person}</option>`;
+                });
+            }
+        }
+
+        function loadActionDetails(actionId) {
+            document.getElementById('followupActionId').value = actionId;
+        }
+
+        document.getElementById('followupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitFollowupBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ กำลังบันทึก...';
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            const result = await callAPI('createFollowUp', data);
+
+            if (result.success) {
+                showAlert('followupSuccess', result.message);
+                this.reset();
+            } else {
+                showAlert('followupError', result.message);
+            }
+
+            btn.disabled = false;
+            btn.textContent = '💾 บันทึก';
+        });
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        function showAlert(elementId, message) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 5000);
+        }
+
+        // ============================================
+        // INITIALIZE
+        // ============================================
+        window.addEventListener('load', function() {
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>
